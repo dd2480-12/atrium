@@ -1,6 +1,8 @@
 package ch.tutteli.atrium.api.infix.en_GB
 
+import ch.tutteli.atrium.api.infix.en_GB.creating.feature.FeatureStep
 import ch.tutteli.atrium.creating.Expect
+import ch.tutteli.atrium.creating.FeatureExpect
 import ch.tutteli.atrium.domain.builders.ExpectImpl
 
 /**
@@ -9,7 +11,10 @@ import ch.tutteli.atrium.domain.builders.ExpectImpl
  *
  * @return The newly created [Expect].
  */
-val <K, T : Pair<K, *>> Expect<T>.first get() : Expect<K> = ExpectImpl.pair.first(this).getExpectOfFeature()
+val <K, T : Pair<K, *>> Expect<T>.first get() : FeatureExpect<T, K> = ExpectImpl.pair.first(this).getExpectOfFeature()
+
+infix fun <K, T : Pair<K, *>> Expect<T>.first(o: o) = ExpectImpl.pair.first(this).getExpectOfFeature()
+
 
 /**
  * Expects that the property [Pair.first] of the subject of the assertion

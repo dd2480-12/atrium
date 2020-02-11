@@ -18,9 +18,9 @@ import ch.tutteli.atrium.domain.creating.collectors.assertionCollector
  *   returns a new [Expect] of type [R] but also applies a given assertionCreator lambda.
  */
 abstract class PostFinalStep<T, R, E : Expect<R>>(
-    protected val expect: Expect<T>,
-    protected val action: Expect<T>.() -> E,
-    protected val actionAndApply: Expect<T>.(Expect<R>.() -> Unit) -> Expect<R>
+    val expect: Expect<T>,
+    val action: Expect<T>.() -> E,
+    val actionAndApply: Expect<T>.(Expect<R>.() -> Unit) -> E
 ) {
 
     /**
