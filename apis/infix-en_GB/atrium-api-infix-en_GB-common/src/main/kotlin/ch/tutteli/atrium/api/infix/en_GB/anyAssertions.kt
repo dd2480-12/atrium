@@ -174,7 +174,7 @@ inline infix fun <T> Expect<T>.and(@Suppress("UNUSED_PARAMETER") o: o): Expect<T
 infix fun <T> Expect<T>.and(assertionCreator: Expect<T>.() -> Unit) = addAssertionsCreatedBy(assertionCreator)
 
 /**
- * Inline property referring actually to `this` and allows to write nicer sub-assertions.
+ * Inline property referring actually to `this` and allows to write infix assertions within an assertion group block
  *
  * For instance, instead of:
  * ```
