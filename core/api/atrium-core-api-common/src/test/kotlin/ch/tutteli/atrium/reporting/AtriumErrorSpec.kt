@@ -1,5 +1,6 @@
 package ch.tutteli.atrium.reporting
 
+import ch.tutteli.atrium.api.cc.infix.en_GB.notToBeNull
 import ch.tutteli.atrium.api.cc.infix.en_GB.property
 import ch.tutteli.atrium.api.cc.infix.en_GB.toBe
 import ch.tutteli.atrium.verbs.internal.assert
@@ -12,7 +13,7 @@ class AtriumErrorSpec : Spek({
         //regression for #303
         it("has `null` as cause") {
             val e = AtriumError.create("hello world", coreFactory.newNoOpAtriumErrorAdjuster())
-            assert(e).property(Throwable::cause).toBe(null)
+            assert(e).property(Throwable::cause).notToBeNull {  }
         }
     }
 })

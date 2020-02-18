@@ -13,6 +13,8 @@ import ch.tutteli.atrium.reporting.AtriumError.Companion
  */
 actual class AtriumError internal actual constructor(message: String) : AssertionError(message, null) {
 
+    override fun toString(): String = message!!
+
     actual companion object {
         /**
          * * Creates an [AtriumError] and adjusts it with the given [atriumErrorAdjuster] before it is returned

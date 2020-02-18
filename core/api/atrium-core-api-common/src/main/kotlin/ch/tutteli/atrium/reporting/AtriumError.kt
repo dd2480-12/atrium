@@ -23,7 +23,7 @@ expect class AtriumError internal constructor(message: String) : AssertionError 
 }
 
 internal fun createAtriumError(message: String, errorAdjuster: AtriumErrorAdjuster): AtriumError {
-    val err = AtriumError(message)
+    val err = AtriumError( message)
     errorAdjuster.adjust(err)
     return err
 }
