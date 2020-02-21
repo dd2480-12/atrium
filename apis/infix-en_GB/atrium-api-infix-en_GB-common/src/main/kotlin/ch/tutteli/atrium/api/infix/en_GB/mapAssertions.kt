@@ -1,15 +1,8 @@
-package ch.tutteli.atrium.api.fluent.en_GB
+package ch.tutteli.atrium.api.infix.en_GB
 
-import ch.tutteli.atrium.api.infix.en_GB.All
-import ch.tutteli.atrium.api.infix.en_GB.Empty
-import ch.tutteli.atrium.api.infix.en_GB.KeyValue
-import ch.tutteli.atrium.api.infix.en_GB.Pairs
-import ch.tutteli.atrium.assertions.Assertion
-import ch.tutteli.atrium.creating.AssertionPlant
+import ch.tutteli.atrium.api.infix.en_GB.creating.map.get.builders.MapGetOption
 import ch.tutteli.atrium.creating.Expect
-import ch.tutteli.atrium.domain.builders.AssertImpl
 import ch.tutteli.atrium.domain.builders.ExpectImpl
-import ch.tutteli.kbox.glue
 
 /**
  * Expects that the subject of the assertion (a [Map]) contains a key as defined by [keyValuePair]'s [Pair.first]
@@ -52,13 +45,13 @@ import ch.tutteli.kbox.glue
 )*/
 
 infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValuePairs: Pairs<K, V>) :Expect<T> =
-    addAssertion(AssertImpl.map.contains(this, keyValuePairs.toList()))
+    addAssertion(ExpectImpl.map.contains(this, keyValuePairs.toList()))
 
 infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue<K,V>) :Expect<T> =
     contains(All(keyValue))
 
 infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValues: All<KeyValue<K,V>>) :Expect<T> =
-    addAssertion(AssertImpl.map.contains(this, keyValues.toList().map{it.toPair()}))
+    addAssertion(ExpectImpl.map.contains(this, keyValues.toList().map{it.toPair()}))
 
 /**
  * Expects that the subject of the assertion (a [Map]) contains the given [key].
@@ -117,11 +110,9 @@ infix fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K): Expect<V> =
  * @throws AssertionError Might throw an [AssertionError] if a created [Assertion]s (by calling [assertionCreator])
  *   does not hold.
  */
-/* fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K, assertionCreator: Expect<V>.() -> Unit) =
-    ExpectImpl.map.getExisting(this, key).addToInitial(assertionCreator)*/
 
-infix fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K, assertionCreator: Expect<V>.() -> Unit) =
-    ExpectImpl.map.getExisting(this, key).addToInitial(assertionCreator)
+infix fun <K, V: Any, T: Map<out K, V>> Expect<T>.getExisting(key: Key<K>): MapGetOption<K, V, T>
+    = MapGetOption.create(this, key.key)
 
 /**
  * Creates an [Expect] for the property [Map.keys] of the subject of the assertion,
@@ -175,9 +166,11 @@ private fun <K, V, T : Map<out K, V>> Expect<T>.values() = ExpectImpl.feature.pr
  *
  * @return The newly created [Expect] for the transformed subject.
  */
-fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
-    ExpectImpl.changeSubject(this).unreported { it.entries }
+/*fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
+    ExpectImpl.changeSubject(this).unreported { it.entries }*/
 
+ fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
+    ExpectImpl.changeSubject(this).unreported { it.entries }
 /**
  * Turns `Expect<Map<K, V>>` into `Expect<Set<Map.Entry<K, V>>>` and expects that it holds all assertions the given
  * [assertionCreator] creates.

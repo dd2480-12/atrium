@@ -8,7 +8,7 @@ import ch.tutteli.atrium.domain.builders.utils.VarArgHelper
  */
 data class Index(val index: Int)
 
-
+data class Key<out K>(val key: K)
 /**
  * Parameter object to express `T, vararg T` in the infix-api.
  */
