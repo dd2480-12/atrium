@@ -6,50 +6,55 @@ import ch.tutteli.atrium.domain.builders.ExpectImpl
 
 /**
  * Expects that the subject of the assertion (a [Map]) contains a key as defined by [keyValuePair]'s [Pair.first]
- * with a corresponding value as defined by [keyValuePair]'s [Pair.second] -- optionally the same assertions
- * are created for the [otherPairs].
+ * with a corresponding value as defined by [keyValuePair]'s [Pair.second]
  *
- * Notice, that it does not search for unique matches. Meaning, if the map is `mapOf('a' to 1)` and [keyValuePair] is
- * defined as `'a' to 1` and one of the [otherPairs] is defined as `'a' to 1` as well, then both match,
+ * Delegates to 'contains Pairs(keyValuePair)'.
+ *
+ * @return This assertion container to support a fluent API.
+ * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
+ */
+infix fun <K, V, T: Map<out K, V>> Expect<T>.contains(keyValuePair: Pair<K, V>) =
+    contains(Pairs(keyValuePair))
+
+/**
+ * Expects the subject of the assertion (a [Map]) contains for each entry in [keyValuePairs],
+ * a key as defined by that entry's [Pair.first] with a corresponding value as defined by entry's [Pair.second].
+ *
+ * Notice, that it does not search for unique matches. Meaning, if the map is `mapOf('a' to 1)` and one of the [Pair]
+ * in [keyValuePairs] is defined as `'a' to 1` and another one is defined as `'a' to 1` as well, then both match,
  * even though they match the same entry.
  *
  * @return This assertion container to support a fluent API.
  * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
  */
-/*fun <K, V, T : Map<out K, V>> Expect<T>.contains(
-    keyValuePair: Pair<K, V>,
-    vararg otherPairs: Pair<K, V>
-) = addAssertion(ExpectImpl.map.contains(this, keyValuePair glue otherPairs))*/
-
+infix fun <K, V, T : Map<out K, V>> Expect<T>.contains(keyValuePairs: Pairs<K, V>) :Expect<T> =
+    addAssertion(ExpectImpl.map.contains(this, keyValuePairs.toList()))
 
 /**
  * Expects that the subject of the assertion (a [Map]) contains a key as defined by [keyValue]'s [KeyValue.key]
  * with a corresponding value which either holds all assertions [keyValue]'s
  * [KeyValue.valueAssertionCreatorOrNull] creates or needs to be `null` in case
  * [KeyValue.valueAssertionCreatorOrNull] is defined as `null`
- * -- optionally the same assertions are created for the [otherKeyValues].
  *
- * Notice, that it does not search for unique matches. Meaning, if the map is `mapOf('a' to 1)` and [keyValue] is
- * defined as `Key('a') { isGreaterThan(0) }` and one of the [otherKeyValues] is defined as `Key('a') { isLessThan(2) }`
+ * @return This assertion container to support a fluent API.
+ * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
+ */
+infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue<K,V>) :Expect<T> =
+    contains(All(keyValue))
+
+/**
+ * Expects that the subject of the assertion (a [Map]) contains for each [KeyValue] in [keyValues],
+ * a key as defined by [KeyValue.key] with a corresponding value which either holds all
+ * assertions [KeyValue]'s [KeyValue.valueAssertionCreatorOrNull] creates or needs to be `null` in case
+ * [KeyValue.valueAssertionCreatorOrNull] is defined as `null`
+ *
+ * Notice, that it does not search for unique matches. Meaning, if the map is `mapOf('a' to 1)` and one [KeyValue] in
+ * [keyValues] is defined as `Key('a') { isGreaterThan(0) }` and another one is defined as `Key('a') { isLessThan(2) }`
  * , then both match, even though they match the same entry.
  *
  * @return This assertion container to support a fluent API.
  * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
  */
-
-/*inline fun <K, reified V : Any, T : Map<out K, V?>> Expect<T>.contains(
-    keyValue: KeyValue<K, V>,
-    vararg otherKeyValues: KeyValue<K, V>
-) = addAssertion(
-    ExpectImpl.map.containsKeyWithValueAssertions(this, V::class, (keyValue glue otherKeyValues).map { it.toPair() })
-)*/
-
-infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValuePairs: Pairs<K, V>) :Expect<T> =
-    addAssertion(ExpectImpl.map.contains(this, keyValuePairs.toList()))
-
-infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue<K,V>) :Expect<T> =
-    contains(All(keyValue))
-
 infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValues: All<KeyValue<K,V>>) :Expect<T> =
     addAssertion(ExpectImpl.map.contains(this, keyValues.toList().map{it.toPair()}))
 
@@ -71,23 +76,6 @@ infix fun <K, T : Map<out K, *>> Expect<T>.containsNotKey(key: K) =
     addAssertion(ExpectImpl.map.containsNotKey(this, key))
 
 /**
- * Expects that the subject of the assertion (a [Map]) is an empty [Map].
- *
- * @return This assertion container to support a fluent API.
- * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
- */
-infix fun <T : Map<*, *>> Expect<T>.toBe(Empty: Empty) = addAssertion(ExpectImpl.map.isEmpty(this))
-
-// convert isNotEmpty() to notToBe Empty
-/**
- * Expects that the subject of the assertion (a [Map]) is not an empty [Map].
- *
- * @return This assertion container to support a fluent API.
- * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
- */
-infix fun <T : Map<*, *>> Expect<T>.notToBe(Empty: Empty) = addAssertion(ExpectImpl.map.isNotEmpty(this))
-
-/**
  * Expects that the subject of the assertion (a [Map]) contains the given [key],
  * creates an [Expect] for the corresponding value and returns the newly created assertion container,
  * so that further fluent calls are assertions about it.
@@ -95,24 +83,17 @@ infix fun <T : Map<*, *>> Expect<T>.notToBe(Empty: Empty) = addAssertion(ExpectI
  * @return The newly created [Expect] for the feature.
  * @throws AssertionError Might throw an [AssertionError] if the given [key] does not exist.
  */
-/* fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K): Expect<V> =
-    ExpectImpl.map.getExisting(this, key).getExpectOfFeature()*/
-
 infix fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K): Expect<V> =
     ExpectImpl.map.getExisting(this, key).getExpectOfFeature()
 
-//TODO
 /**
- * Expects that the subject of the assertion (a [Map]) contains the given [key] and that
- * the corresponding value holds all assertions the given [assertionCreator] creates for it.
+ * Prepares the assertion about the return value of calling [get][Map.get] with the given [key].
  *
- * @return This assertion container to support a fluent API.
- * @throws AssertionError Might throw an [AssertionError] if a created [Assertion]s (by calling [assertionCreator])
- *   does not hold.
- */
-
+ * @return A fluent builder to finish the assertion.
+ * */
 infix fun <K, V: Any, T: Map<out K, V>> Expect<T>.getExisting(key: Key<K>): MapGetOption<K, V, T>
     = MapGetOption.create(this, key.key)
+
 
 /**
  * Creates an [Expect] for the property [Map.keys] of the subject of the assertion,
@@ -136,6 +117,22 @@ infix fun <K, V, T : Map<out K, V>> Expect<T>.keys(assertionCreator: Expect<Set<
 private fun <K, T : Map<out K, *>> keys(e: Expect<T>) = ExpectImpl.feature.property(e, Map<out K, *>::keys)
 
 /**
+ * Expects that the subject of the assertion (a [Map]) is an empty [Map].
+ *
+ * @return This assertion container to support a fluent API.
+ * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
+ */
+infix fun <T : Map<*, *>> Expect<T>.toBe(Empty: Empty) = addAssertion(ExpectImpl.map.isEmpty(this))
+
+/**
+ * Expects that the subject of the assertion (a [Map]) is not an empty [Map].
+ *
+ * @return This assertion container to support a fluent API.
+ * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
+ */
+infix fun <T : Map<*, *>> Expect<T>.notToBe(Empty: Empty) = addAssertion(ExpectImpl.map.isNotEmpty(this))
+
+/**
  * Creates an [Expect] for the property [Map.values] of the subject of the assertion,
  * so that further fluent calls are assertions about it.
  *
@@ -156,8 +153,6 @@ infix fun <K, V, T : Map<K, V>> Expect<T>.values(assertionCreator: Expect<Collec
 
 private fun <K, V, T : Map<out K, V>> Expect<T>.values() = ExpectImpl.feature.property(this, Map<out K, V>::values)
 
-
-//TODO
 /**
  * Turns `Expect<Map<K, V>>` into `Expect<Set<Map.Entry<K, V>>>`.
  *
@@ -166,11 +161,9 @@ private fun <K, V, T : Map<out K, V>> Expect<T>.values() = ExpectImpl.feature.pr
  *
  * @return The newly created [Expect] for the transformed subject.
  */
-/*fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
-    ExpectImpl.changeSubject(this).unreported { it.entries }*/
-
- fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
+fun <K, V, T : Map<out K, V>> Expect<T>.asEntries(): Expect<Set<Map.Entry<K, V>>> =
     ExpectImpl.changeSubject(this).unreported { it.entries }
+
 /**
  * Turns `Expect<Map<K, V>>` into `Expect<Set<Map.Entry<K, V>>>` and expects that it holds all assertions the given
  * [assertionCreator] creates.
