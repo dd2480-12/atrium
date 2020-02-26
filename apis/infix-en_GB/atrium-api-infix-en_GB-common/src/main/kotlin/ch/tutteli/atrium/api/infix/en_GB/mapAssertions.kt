@@ -39,7 +39,7 @@ infix fun <K, V, T : Map<out K, V>> Expect<T>.contains(keyValuePairs: Pairs<K, V
  * @return This assertion container to support a fluent API.
  * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
  */
-infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue<K,V>) :Expect<T> =
+inline infix fun <K, reified V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue<K,V>) :Expect<T> =
     contains(All(keyValue))
 
 /**
@@ -55,8 +55,8 @@ infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValue: KeyValue
  * @return This assertion container to support a fluent API.
  * @throws AssertionError Might throw an [AssertionError] if the assertion made is not correct.
  */
-infix fun <K, V : Any, T : Map<out K, V?>> Expect<T>.contains(keyValues: All<KeyValue<K,V>>) :Expect<T> =
-    addAssertion(ExpectImpl.map.contains(this, keyValues.toList().map{it.toPair()}))
+inline infix fun <K, reified V : Any, T: Map<out K, V?>> Expect<T>.contains(keyValues: All<KeyValue<K, V>>)
+    = addAssertion(ExpectImpl.map.containsKeyWithValueAssertions(this, V::class, keyValues.toList().map { it.toPair() }))
 
 /**
  * Expects that the subject of the assertion (a [Map]) contains the given [key].
