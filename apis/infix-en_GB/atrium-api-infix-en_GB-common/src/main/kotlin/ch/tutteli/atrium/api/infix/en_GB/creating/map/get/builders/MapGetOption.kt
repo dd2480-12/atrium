@@ -15,7 +15,7 @@ import ch.tutteli.atrium.creating.SubjectProvider
  * @param V the value type of the [Map].
  * @param T A subtype of [Map].
  */
-interface MapGetOption<K, V : Any, T : Map<out K, V>> {
+interface MapGetOption<K, V, T : Map<out K, V>> {
     /**
      * The [AssertionPlant] for which this assertion is created
      */
@@ -41,7 +41,7 @@ interface MapGetOption<K, V : Any, T : Map<out K, V>> {
         /**
          * Creates a [MapGetOption] based on the given [plant] and [key].
          */
-        fun <K, V : Any, T: Map<out K, V>> create(plant: Expect<T>, key: K): MapGetOption<K, V, T>
+        fun <K, V, T: Map<out K, V>> create(plant: Expect<T>, key: K): MapGetOption<K, V, T>
             = MapGetOptionImpl(plant, key)
     }
 }

@@ -91,7 +91,7 @@ infix fun <K, V, T : Map<out K, V>> Expect<T>.getExisting(key: K): Expect<V> =
  *
  * @return A fluent builder to finish the assertion.
  * */
-infix fun <K, V: Any, T: Map<out K, V>> Expect<T>.getExisting(key: Key<K>): MapGetOption<K, V, T>
+infix fun <K, V, T: Map<out K, V>> Expect<T>.getExisting(key: Key<K>): MapGetOption<K, V, T>
     = MapGetOption.create(this, key.key)
 
 
