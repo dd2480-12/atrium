@@ -9,15 +9,15 @@ import ch.tutteli.atrium.specs.notImplemented
 
 class MapExpectionsSpec : ch.tutteli.atrium.specs.integration.MapAssertionsSpec(
     fun2(Companion::contains),
-    fun2(Companion::containsNullable),
-    fun2(Companion::containsKeyWithValueAssertions),
-    fun2(Companion::containsKeyWithNullableValueAssertions),
+    "contains" to Companion::containsNullable,
+    "contains ${KeyValue::class.simpleName}" to Companion::containsKeyWithValueAssertions,
+    "contains ${KeyValue::class.simpleName}" to Companion::containsKeyWithNullableValueAssertions,
     fun1(Companion::containsKey),
     fun1(Companion::containsNullableKey),
     fun1(Companion::containsNotKey),
     fun1(Companion::containsNotNullableKey),
-    fun0(Companion::isEmpty),
-    fun0(Companion::isNotEmpty)
+    "toBe ${Empty::class.simpleName}" to Companion::isEmpty,
+    "notToBe ${Empty::class.simpleName}" to Companion::isNotEmpty
 ) {
     companion object {
         private fun contains(plant: Expect<Map<out String, Int>>, pair: Pair<String, Int>, otherPairs: Array<out Pair<String, Int>>): Expect<Map<out String, Int>> {
