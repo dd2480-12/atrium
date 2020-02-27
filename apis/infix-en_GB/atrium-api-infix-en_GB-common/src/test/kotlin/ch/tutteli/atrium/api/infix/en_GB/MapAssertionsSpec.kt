@@ -2,20 +2,18 @@ package ch.tutteli.atrium.api.infix.en_GB
 
 import ch.tutteli.atrium.creating.Expect
 import ch.tutteli.atrium.domain.builders.utils.mapArguments
-import ch.tutteli.atrium.specs.fun0
-import ch.tutteli.atrium.specs.fun1
-import ch.tutteli.atrium.specs.fun2
-import ch.tutteli.atrium.specs.notImplemented
+import ch.tutteli.atrium.specs.*
 
 class MapExpectionsSpec : ch.tutteli.atrium.specs.integration.MapAssertionsSpec(
     fun2(Companion::contains),
-    "contains" to Companion::containsNullable,
-    "contains ${KeyValue::class.simpleName}" to Companion::containsKeyWithValueAssertions,
-    "contains ${KeyValue::class.simpleName}" to Companion::containsKeyWithNullableValueAssertions,
+    fun2(Companion::contains).name to Companion::containsNullable,
+    "${fun2(Companion::contains).name} ${KeyValue::class.simpleName}" to Companion::containsKeyWithValueAssertions,
+    "${fun2(Companion::contains).name} ${KeyValue::class.simpleName}" to Companion::containsKeyWithNullableValueAssertions,
     fun1(Companion::containsKey),
     fun1(Companion::containsNullableKey),
     fun1(Companion::containsNotKey),
     fun1(Companion::containsNotNullableKey),
+    /* string toBe, notToBe to avoid ambiguity error */
     "toBe ${Empty::class.simpleName}" to Companion::isEmpty,
     "notToBe ${Empty::class.simpleName}" to Companion::isNotEmpty
 ) {
